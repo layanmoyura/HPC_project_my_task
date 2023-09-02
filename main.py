@@ -2,7 +2,7 @@ from mpi4py import MPI
 from kmeans import KMeans  # Import your KMeans class module here
 
 # Load data from CSV files
-data_folder = "data_files"  # Specify the folder containing the data files
+data_folder = "data_folder"  # Specify the folder containing the data files
 
 # Define parameters for KMeans
 K = 3  # Number of clusters

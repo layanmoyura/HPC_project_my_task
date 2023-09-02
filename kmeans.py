@@ -150,28 +150,61 @@ class KMeans(BaseModel):
         start_read_time = time.time()
 
     # Calculate how many data points each process should load
-        num_files = self._size
-        file_sizes = [100000, 200000, 300000, 400000]  # Sizes of the data files
-        file_load_counts = [0] * num_files
+        data_files = [os.path.join(data_folder, filename) for filename in os.listdir(data_folder) if filename.endswith(".csv")]
 
-        # Determine the portion of data each process should load
-        total_data_loaded = 0
-        for i in range(num_files): # 0, 1, 2, 3
-            if i % num_files == self._rank: # 0, 1, 2, 3
-                file_load_counts[i] = min(file_sizes[i], DatasetSize - total_data_loaded) # 100000, 200000, 300000, 400000
-                total_data_loaded += file_load_counts[i] # 100000, 300000, 600000, 1000000
-            file_load_counts[i] = self._comm.bcast(file_load_counts[i], root=i % num_files) # 100000, 200000, 300000, 400000
+        # Determine the total number of rows in each file
+        #file_row_counts = []
+        #for data_file in data_files:
+            #with open(data_file, 'r') as file:
+               # num_rows = sum(1 for line in file)
+                #file_row_counts.append(num_rows)
 
-        # Load the data based on the determined load counts
-        data_parts = [] # 100000, 200000, 300000, 400000
-        for i in range(num_files):# 0, 1, 2, 3
-            if file_load_counts[i] > 0: # 100000, 200000, 300000, 400000
-                data_file = os.path.join(data_folder, f'data_{i + 1}.csv') # data_1.csv, data_2.csv, data_3.csv, data_4.csv
-                X_part = np.genfromtxt(data_file, delimiter=',') # 100000, 200000, 300000, 400000
-                data_parts.append(X_part) # 100000, 200000, 300000, 400000
+        # Calculate the total number of rows to be loaded across all processes
+        total_rows = DatasetSize
+        rows_per_process = total_rows // self._size
+        file_row_counts = [ 100000, 200000, 300000, 400000]
 
-        # Concatenate the loaded data parts
+        # Calculate the starting row for each process
+        start_row = 0
+        #for i in range(self._rank):
+           #start_row += file_row_counts[i]
+        
+        # Calculate the number of rows to load for this process
+        #rows_to_load = min(rows_per_process, total_rows - start_row)
+        
+
+        # Load data from the files in chunks
+        data_parts = []
+        temp_row = 0
+        temp_index = 0
+        for data_file in data_files:
+            
+            if temp_index == 1:
+                rows_to_load = temp_row
+                temp_index = 0
+            else:
+                rows_to_load = rows_per_process
+            
+            with open(data_file, 'r') as file:
+                                        
+                    while rows_to_load > 0:
+                        try:
+                            line = next(file).strip()
+                            data_part = np.fromstring(line, sep=',')
+                            data_parts.append(data_part)
+                            rows_to_load -= 1
+    
+                        except StopIteration:
+                            temp_row = rows_to_load
+                            temp_index = 1
+                            break
+                        
+                        
+                
+        
         X = np.vstack(data_parts)
+        print(X.size)
+        
         end_read_time = time.time()
         elapsed_read_time = end_read_time - start_read_time
         self.spend_read_time = elapsed_read_time

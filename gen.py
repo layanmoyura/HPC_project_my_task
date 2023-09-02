@@ -20,4 +20,4 @@ def generateData(output_folder='data_files'):
         np.savetxt(filename, X, delimiter=',')
 
 # Call the function to generate four files in the "data_files" folder
-generateData(output_folder='data_files')
+generateData(output_folder='data_folder')
