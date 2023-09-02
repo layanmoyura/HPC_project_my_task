@@ -148,24 +148,40 @@ class KMeans(BaseModel):
         """
         # Load data from multiple files and balance it among processes
         start_read_time = time.time()
-        
-        X_list = []
-        for i in range(self._size):
-            data_file = os.path.join(data_folder, f'data_{i + 1}.csv')
-            X_part = np.genfromtxt(data_file, delimiter=',')
-            X_list.append(X_part)
-        X = np.vstack(X_list)
-       
+
+    # Calculate how many data points each process should load
+        num_files = self._size
+        file_sizes = [100000, 200000, 300000, 400000]  # Sizes of the data files
+        file_load_counts = [0] * num_files
+
+        # Determine the portion of data each process should load
+        total_data_loaded = 0
+        for i in range(num_files): # 0, 1, 2, 3
+            if i % num_files == self._rank: # 0, 1, 2, 3
+                file_load_counts[i] = min(file_sizes[i], DatasetSize - total_data_loaded) # 100000, 200000, 300000, 400000
+                total_data_loaded += file_load_counts[i] # 100000, 300000, 600000, 1000000
+            file_load_counts[i] = self._comm.bcast(file_load_counts[i], root=i % num_files) # 100000, 200000, 300000, 400000
+
+        # Load the data based on the determined load counts
+        data_parts = [] # 100000, 200000, 300000, 400000
+        for i in range(num_files):# 0, 1, 2, 3
+            if file_load_counts[i] > 0: # 100000, 200000, 300000, 400000
+                data_file = os.path.join(data_folder, f'data_{i + 1}.csv') # data_1.csv, data_2.csv, data_3.csv, data_4.csv
+                X_part = np.genfromtxt(data_file, delimiter=',') # 100000, 200000, 300000, 400000
+                data_parts.append(X_part) # 100000, 200000, 300000, 400000
+
+        # Concatenate the loaded data parts
+        X = np.vstack(data_parts)
         end_read_time = time.time()
-        
         elapsed_read_time = end_read_time - start_read_time
         self.spend_read_time = elapsed_read_time
-        
         print(f"Process {self._rank}: Data loader took {elapsed_read_time:.4f} seconds")
 
         start_time = time.time()
         # Initialize centroids
         centroids = self._initialize_centroids(self._n_clusters, X)
+        
+        
         
         start_scatter_time = time.time()
         # Scatter data
@@ -183,7 +199,7 @@ class KMeans(BaseModel):
             labels = self._assign_labels(distances)
         
             centroids = self._update_centroids(x_local, self._n_clusters, labels)
-
+            
             # If file_prefix is provided, create plots at each iteration
             if plot_graph and self._rank == 0 and self._file_prefix:
                 plot(x_local, centroids, labels, False, i, self._file_prefix)

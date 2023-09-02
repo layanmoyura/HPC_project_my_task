@@ -6,7 +6,7 @@ data_folder = "data_files"  # Specify the folder containing the data files
 
 # Define parameters for KMeans
 K = 3  # Number of clusters
-max_iter = 30  # Maximum number of iterations
+max_iter = 3  # Maximum number of iterations
 
 # Initialize MPI
 comm = MPI.COMM_WORLD
