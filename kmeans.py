@@ -160,14 +160,14 @@ class KMeans(BaseModel):
                 #file_row_counts.append(num_rows)
 
         # Calculate the total number of rows to be loaded across all processes
-        total_rows = DatasetSize
-        rows_per_process = total_rows // self._size
+        
+        rows_per_process = DatasetSize // self._size
         file_row_counts = [ 100000, 200000, 300000, 400000]
 
         # Calculate the starting row for each process
         start_row = 0
         #for i in range(self._rank):
-           #start_row += file_row_counts[i]
+        #start_row += file_row_counts[i]
         
         # Calculate the number of rows to load for this process
         #rows_to_load = min(rows_per_process, total_rows - start_row)
@@ -175,35 +175,45 @@ class KMeans(BaseModel):
 
         # Load data from the files in chunks
         data_parts = []
-        temp_row = 0
-        temp_index = 0
-        for data_file in data_files:
-            
-            if temp_index == 1:
-                rows_to_load = temp_row
-                temp_index = 0
-            else:
-                rows_to_load = rows_per_process
-            
-            with open(data_file, 'r') as file:
-                                        
-                    while rows_to_load > 0:
-                        try:
-                            line = next(file).strip()
-                            data_part = np.fromstring(line, sep=',')
-                            data_parts.append(data_part)
-                            rows_to_load -= 1
-    
-                        except StopIteration:
-                            temp_row = rows_to_load
-                            temp_index = 1
-                            break
-                        
-                        
-                
+        rows_to_load = rows_per_process
+        start_row = [0 , 150000, 200000,150000]
         
+        with open(data_files[self._rank], 'r') as file:
+        # Skip to the starting row for this process
+            data_chunk = np.genfromtxt(file, delimiter=',', skip_header=start_row[self._rank], max_rows=file_row_counts[self._rank])
+            
+
+            for row in data_chunk:
+                try:
+                    data_parts.append(row)
+                    rows_to_load -= 1
+                    if(rows_to_load == 0):
+                        break
+    
+                except StopIteration:
+                    break
+            print(f"at process {self._rank} step 1 total rows >>>> {len(data_parts)}  remain >>>> {rows_to_load}")
+                
+        if self._rank != 3:  
+            
+            with open(data_files[self._rank + 1], 'r') as file:
+                    
+                data_chunk = np.genfromtxt(file, delimiter=',', skip_header=0, max_rows=start_row[self._rank + 1])
+            
+
+                for row in data_chunk:
+                  
+                    data_parts.append(row)
+                    rows_to_load -= 1
+                    if(rows_to_load == 0):
+                        break
+                print(f"at process {self._rank} step 2 total rows >>>> {len(data_parts)}  remain >>>> {rows_to_load}")
+        
+                    
+        # Combine the data parts into a single NumPy array
         X = np.vstack(data_parts)
-        print(X.size)
+        #print(X.shape[0])
+        
         
         end_read_time = time.time()
         elapsed_read_time = end_read_time - start_read_time
