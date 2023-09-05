@@ -178,6 +178,15 @@ class KMeans(BaseModel):
         rows_to_load = rows_per_process
         start_row = [0 , 150000, 200000,150000]
         
+        start_row_1 = []
+        
+        for i in range(self._size):
+            if i == 0:
+                start_row_1.append(0)   
+            else:   
+                start_row_1.append (DatasetSize // self._size - (file_row_counts[i-1] - start_row_1[i-1]))
+        print(start_row_1)
+        
         with open(data_files[self._rank], 'r') as file:
         # Skip to the starting row for this process
             data_chunk = np.genfromtxt(file, delimiter=',', skip_header=start_row[self._rank], max_rows=file_row_counts[self._rank])
