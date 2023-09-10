@@ -46,7 +46,7 @@ When dealing with multiple data files, it's common to have files with varying nu
 
 7. Finally, the script may perform additional post-processing tasks or display the kmeans results.
 
-###Results Displayed in the Console:
+### Results Displayed in the Console:
 
 The script provides various information in the console during its execution. Here's a list of results and information that can be shown:
 
