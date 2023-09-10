@@ -60,8 +60,9 @@ The script provides various information in the console during its execution. Her
 
 5. Total Time Breakdown: At the end of the script, the total time spent on data loading, communication, and calculation is summarized, e.g., "Data loader took 3.1234 seconds," "Communication took 0.7890 seconds," and "Calculation took 2.3456 seconds."
 
-6. Finally Kmeans iterations as shown below.
+6. Finally Kmeans iterations as shown below saved in images folder.
 
+![kmeans_clustering_animate](https://github.com/layanmoyura/HPC_project_my_task/assets/84334230/233e4d30-af5d-4d4f-8abf-ebc21609198c)
 
 
 ### Customization
