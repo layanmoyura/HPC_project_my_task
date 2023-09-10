@@ -5,6 +5,9 @@
 
 To load data from multiple files where each file contains a different number of rows while maintaining a constant number of columns and ensuring a balanced load, you can use the provided Bash script. This script is designed to work on an Ubuntu operating system. In this program total rows loaded are 1M and it is divided into 4 files containing 100000, 200000, 300000, and 400000 respectively. 
 
+![1](https://github.com/layanmoyura/HPC_project_my_task/assets/84334230/0de2d746-2d56-44e1-a9c2-b247e243657f)
+
+
 To execute the script:
 
 1. Open your terminal in the directory where your program files are located.
