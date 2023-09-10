@@ -7,7 +7,7 @@ To load data from multiple files where each file contains a different number of 
 
 To execute the script:
 
-1. Open your terminal in the directory where your data files are located.
+1. Open your terminal in the directory where your program files are located.
 
 2. Make sure the script has execute permissions. If not, you can grant execute permissions by running:
 
