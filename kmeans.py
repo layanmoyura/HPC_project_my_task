@@ -217,13 +217,11 @@ class KMeans(BaseModel):
         Returns:
           a numpy array of the updated centroids.
         """
-       
         new_centroids = []
         for i in range(n_clusters):
             
             local_centroid = np.mean(X[labels == i], axis=0)
-            start_com_time = time.time()
-           
+            start_com_time = time.time()            
             new_centroid_imd = self._comm.allreduce(local_centroid, op=MPI.SUM)
             end_com_time = time.time()
             elapsed_com_time = end_com_time - start_com_time
@@ -249,7 +247,6 @@ class KMeans(BaseModel):
           y: The parameter `y` is used to specify the target variable or labels for the data. It is
         optional and is not used in the `fit` method provided.
         """
-       
         # The below code is implementing a parallel K-means clustering algorithm using MPI (Message
         # Passing Interface) in Python. It is divided into multiple processes, each responsible for
         # loading and processing a same size portion of the data. The code performs the following steps:
@@ -257,16 +254,16 @@ class KMeans(BaseModel):
 
     
         data_files = [os.path.join(data_folder, filename) for filename in os.listdir(data_folder) if filename.endswith(".csv")]
-
-    
+        
         rows_per_process = DatasetSize // self._size
-        file_row_counts = [ 100000, 200000, 300000, 400000]
+        file_row_counts = [rows_per_process] * self._size
+        file_row_counts = [ 100000, 200000, 300000, 400000] # Manually set the number of rows in each file
 
         start_row = 0
 
         data_parts = []
         rows_to_load = rows_per_process
-        start_row = [0 , 150000, 200000,150000]
+        start_row = [0 , 150000, 200000,150000] # Manually set the start row for each process (change this such that each process loads the same number of rows)
         
     
         
