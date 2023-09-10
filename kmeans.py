@@ -56,20 +56,51 @@ def plot(X, centroids, labels, show=True, iteration=None, file_name=None):
 class BaseModel(ABC):
     
     def __init__(self) -> None:
+        """
+        The above function is a constructor that initializes an object.
+        """
         super().__init__()
     
     @abstractmethod
     def fit(self, X, y):
+        """
+        The function "fit" is a placeholder that does not perform any operations.
+        
+        :param X: The X parameter represents the input data or features. It is a matrix or array-like
+        structure where each row represents a sample and each column represents a feature or attribute
+        of that sample. The shape of X is (n_samples, n_features), where n_samples is the number of
+        samples and n_features is
+        :param y: The parameter "y" represents the target variable or the dependent variable in the
+        dataset. It is the variable that we want to predict or model using the features in the dataset
+        """
         pass
     
     @abstractmethod
     def predict(self, X):
+        """
+        The function "predict" takes in a parameter "X" and does not perform any operations.
+        
+        :param X: The input data for which you want to make predictions
+        """
         pass
     
 # The `KMeans` class is a subclass of `BaseModel` that implements the K-means clustering algorithm.
 class KMeans(BaseModel):
     
     def __init__(self, n_clusters, max_iter, comm, file_prefix) -> None: 
+        """
+        The function is a constructor that initializes the attributes of a clustering algorithm object.
+        
+        :param n_clusters: The number of clusters to be formed in the clustering algorithm
+        :param max_iter: The maximum number of iterations for the clustering algorithm to run
+        :param comm: The `comm` parameter is an object that represents the communication context. It is
+        used for communication between different processes in parallel computing. It provides methods
+        for sending and receiving data between processes. In this code, it is used to determine the rank
+        and size of the current process. The rank represents the unique
+        :param file_prefix: The `file_prefix` parameter is a string that represents the prefix of the
+        file names that will be used for input and output files in the clustering algorithm. It is used
+        to generate unique file names for each process in a parallel implementation of the algorithm
+        """
         self._n_clusters = n_clusters
         self._max_iter = max_iter
         self._centroids = None
@@ -90,14 +121,26 @@ class KMeans(BaseModel):
         
     @property
     def labels(self):
+        """
+        The function returns the labels of an object.
+        :return: The method is returning the value of the variable `self._labels`.
+        """
         return self._labels
     
     @property
     def centroids(self):
+        """
+        The function returns the centroids of a given object.
+        :return: The centroids of the object.
+        """
         return self._centroids
     
     @property
     def initial_centroids(self):
+        """
+        The function returns the initial centroids.
+        :return: The method is returning the value of the variable `_initial_centroids`.
+        """
         return self._initial_centroids
     
     def _initialize_centroids(self, K: int, X: np.array) -> np.array:
