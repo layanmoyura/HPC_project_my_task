@@ -46,6 +46,24 @@ When dealing with multiple data files, it's common to have files with varying nu
 
 7. Finally, the script may perform additional post-processing tasks or display the kmeans results.
 
+###Results Displayed in the Console:
+
+The script provides various information in the console during its execution. Here's a list of results and information that can be shown:
+
+1. Process Information: Each process may display its rank and step information. For example, "at process 0 step 1" and "at process 0 step 2" indicate loading data in two steps for process 0.
+
+2. Data Loading Time: The script measures and displays the time taken for loading data from CSV files, e.g., "Process 0: Data loader took 2.3456 seconds."
+
+3. Calculation Time: It displays the time taken for the actual K-means clustering calculations, e.g., "Process 0: Calculation took 1.2345 seconds."
+
+4. Communication Time: The time spent on communication between processes using MPI is also displayed, e.g., "Process 0: Communication took 0.5678 seconds."
+
+5. Total Time Breakdown: At the end of the script, the total time spent on data loading, communication, and calculation is summarized, e.g., "Data loader took 3.1234 seconds," "Communication took 0.7890 seconds," and "Calculation took 2.3456 seconds."
+
+6. Finally Kmeans iterations as shown below.
+
+
+
 ### Customization
 
 You can customize the script to meet your specific requirements, such as defining the number of columns or specifying the post-processing steps.
