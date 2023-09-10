@@ -3,7 +3,7 @@
 
 ## Running the Bash Script (Ubuntu)
 
-To load data from multiple files where each file contains a different number of rows while maintaining a constant number of columns and ensuring a balanced load, you can use the provided Bash script. This script is designed to work on an Ubuntu operating system. In this program total rows loaded are 1M and it is divided into 4 files containing 100000, 200000, 300000, and 400000 respectively. 
+To load data from multiple files where each file contains a different number of rows while maintaining a constant number of columns and ensuring a balanced load, you can use the provided Bash script. This script is designed to work on an Ubuntu operating system. In this program total rows loaded are 1M and it is divided into 4 files containing 100000, 200000, 300000, and 400000 respectively as shown in below figure. Each process load 250000 rows of data from four files. 
 
 ![1](https://github.com/layanmoyura/HPC_project_my_task/assets/84334230/0de2d746-2d56-44e1-a9c2-b247e243657f)
 
@@ -28,7 +28,7 @@ To execute the script:
 
 ### Problem Statement
 
-When dealing with multiple data files, it's common to have files with varying numbers of rows. This can be challenging when you want to distribute the data processing load evenly across available resources. The goal of this program is to load data from multiple files with different row counts while keeping the number of columns constant. By doing so, we aim to achieve a balanced load distribution for data processing tasks.
+When dealing with multiple data files, it's common to have files with varying numbers of rows. This can be challenging when you want to distribute the data processing load evenly across available resources. The goal of this program is to load data from multiple files with different row counts while keeping the number of columns constant. By doing so, we aim to achieve a balanced load distribution for data processing tasks. Whenever the file size or file structure is chaneged the starting cursor points should be manually set in the program.
 
 ### Program Workflow
 
